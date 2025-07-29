@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Ollama Chat</title>
+    <style>
+      body { font-family: Arial; margin: 40px; }
+      #chat { max-width: 600px; margin: auto; }
+      .user { color: blue; font-weight: bold; }
+      .bot { color: green; margin-bottom: 20px; }
+    </style>
+  </head>
+  <body>
+    <div id="chat">
+      <h2>🗣️ Chat with {{ model }}</h2>
+      <div id="messages"></div>
+      <input id="input" type="text" placeholder="Type your message..." style="width:80%;">
+      <button onclick="send()">Send</button>
+    </div>
+
+    <script>
+      async function send() {
+        const input = document.getElementById('input');
+        const msg = input.value;
+        if (!msg) return;
+        document.getElementById('messages').innerHTML += '<div class="user">You: ' + msg + '</div>';
+        input.value = '';
+        const res = await fetch('/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: msg })
+        });
+        const data = await res.json();
+        document.getElementById('messages').innerHTML += '<div class="bot">AI: ' + data.response + '</div>';
+      }
+    </script>
+  </body>
+</html>
